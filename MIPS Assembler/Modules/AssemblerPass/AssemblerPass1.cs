@@ -136,10 +136,10 @@ namespace MIPS32_Assembler.AssemblerLibrary
         {
             string filepath = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".inter";
             string filepath2 = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".inters";
-            string filepath3 = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".mac";
+            //string filepath3 = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".mac";
             File.WriteAllLines(filepath, replaceLabelInstr);
             File.WriteAllLines(filepath2, delabelledInstruction);
-            File.WriteAllLines(filepath3, delabelledInstruction);
+            //File.WriteAllLines(filepath3, delabelledInstruction);
 
         }
 
@@ -210,14 +210,14 @@ namespace MIPS32_Assembler.AssemblerLibrary
                     newString2 = newString2.Replace(",", "");
                     replaceLabelInstr.Add(newString2);
 
-                    string[] newString3 = newString2.Split(" ");
-                    if(newString3[0] == "add" || newString3[0] == "sub" || newString3[0] == "and"  || newString3[0] == "or"  || newString3[0] == "xor"  || newString3[0] == "slt" )
-                    {
-                        R_Instruction newR = new R_Instruction(newString3[1], newString3[2], newString3[3], "0", newString3[0], "2");
-                        machineCode.Add(newR.getMachineCode());
+                    //string[] newString3 = newString2.Split(" ");
+                    //if(newString3[0] == "add" || newString3[0] == "sub" || newString3[0] == "and"  || newString3[0] == "or"  || newString3[0] == "xor"  || newString3[0] == "slt" )
+                    //{
+                    //    R_Instruction newR = new R_Instruction(newString3[1], newString3[2], newString3[3], "0", newString3[0], "2");
+                    //    machineCode.Add(newR.getMachineCode());
 
 
-                    }
+                    //}
             
                 }
                     
