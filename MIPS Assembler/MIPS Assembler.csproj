@@ -6,8 +6,4 @@
     <RootNamespace>MIPS_Assembler</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Modules\InstructionModels\" />
-  </ItemGroup>
-
 </Project>
