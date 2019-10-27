@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using MIPS_Assembler.Modules.InstructionModels;
 namespace MIPS32_Assembler.AssemblerLibrary
 {
     class AssemblerPass1
@@ -9,9 +10,42 @@ namespace MIPS32_Assembler.AssemblerLibrary
         private List<string> decommentedInstruction = new List<string>();
         private List<string> deWhiteSpacednstruction = new List<string>();
         private List<string> delabelledInstruction = new List<string>();
+        private List<string> replaceLabelInstr = new List<string>();
+        private List<string> machineCode = new List<string>();
         private string fileLocation;
         private SymbolTableEntry newEntry = new SymbolTableEntry();
         private SymbolTable newTable = new SymbolTable();
+         
+        
+
+        private List<string> Rinstructions = new List<string>
+        {
+            "add",
+            "sub",
+            "and",
+            "or",
+            "xor",
+            "slt",
+            "sll",
+            "srl",
+            "jr"
+        };
+
+
+        private List<string> Iinstructions = new List<string>
+        {
+            "addi",
+            "lw",
+            "sw",
+            "beq"
+        };
+
+        private List<string> Jinstructions = new List<string>
+        {
+            "j",
+            "jal",
+        };
+
 
         public string FileLocation {
             get {
@@ -33,6 +67,7 @@ namespace MIPS32_Assembler.AssemblerLibrary
                 findandstorelabels();
                 printCurrentSymbolTable();
                 removeLabels();
+                replaceLabels();
                 savedelabeeledFile();
             }
             else
@@ -100,7 +135,12 @@ namespace MIPS32_Assembler.AssemblerLibrary
         public void savedelabeeledFile()
         {
             string filepath = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".inter";
-            File.WriteAllLines(filepath, delabelledInstruction);
+            string filepath2 = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".inters";
+            string filepath3 = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".mac";
+            File.WriteAllLines(filepath, replaceLabelInstr);
+            File.WriteAllLines(filepath2, delabelledInstruction);
+            File.WriteAllLines(filepath3, delabelledInstruction);
+
         }
 
         public void findandstorelabels()
@@ -154,6 +194,85 @@ namespace MIPS32_Assembler.AssemblerLibrary
                 }
                      
             }
+        }
+
+        public void replaceLabels()
+        {
+            string newString2;
+            int address;
+            foreach(var instr in delabelledInstruction)
+            {
+                string [] newString = instr.Split(" ");
+               
+                if(Rinstructions.Contains(newString[0]))
+                {
+                    newString2 = instr.Replace("$", "");
+                    newString2 = newString2.Replace(",", "");
+                    replaceLabelInstr.Add(newString2);
+
+                    string[] newString3 = newString2.Split(" ");
+                    if(newString3[0] == "add" || newString3[0] == "sub" || newString3[0] == "and"  || newString3[0] == "or"  || newString3[0] == "xor"  || newString3[0] == "slt" )
+                    {
+                        R_Instruction newR = new R_Instruction(newString3[1], newString3[2], newString3[3], "0", newString3[0], "2");
+                        machineCode.Add(newR.getMachineCode());
+
+
+                    }
+            
+                }
+                    
+                else if (Iinstructions.Contains(newString[0]))
+                {
+                    switch (newString[0].ToLower())
+                    {
+                        case "addi":
+                            newString2 = instr.Replace("$", "");
+                            newString2 = newString2.Replace(",", "");
+                            replaceLabelInstr.Add(newString2);
+                            break;
+                        case "beq":
+                            {
+                                address = newTable.findAddress(newString[3]);
+                                if (address != -1)
+                                {
+                                    newString2 = instr.Replace(newString[3], (address -1).ToString());
+                                    newString2 = newString2.Replace("$", "");
+                                    newString2 = newString2.Replace(",", "");
+                                    replaceLabelInstr.Add(newString2);
+                                }
+                                
+                                break;
+                            }
+                            
+                        case "lw":
+                        case "sw":
+                            newString2 = instr.Replace("$", "");
+                            newString2 = newString2.Replace(",", "");
+                            replaceLabelInstr.Add(newString2);
+                            break;
+
+                        default:
+                            break;
+                    }
+                    
+                }
+                else if (Jinstructions.Contains(newString[0]))
+                {
+                    if(newString[0].ToLower() == "j" || newString[0].ToLower() == "jal")
+                    {
+                        address = newTable.findAddress(newString[1]);
+                        if (address != -1)
+                        {
+                            newString2 = instr.Replace(newString[1], (address - 1).ToString());
+                            newString2 = newString2.Replace("$", "");
+                            newString2 = newString2.Replace(",", "");
+                            replaceLabelInstr.Add(newString2);
+                        }
+                    }
+                }
+                
+            }
+            
         }
 
         public void printCurrentSymbolTable()

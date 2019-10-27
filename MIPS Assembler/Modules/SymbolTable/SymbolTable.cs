@@ -68,6 +68,17 @@ namespace MIPS32_Assembler.AssemblerLibrary
             
         }
 
+
+        public int findAddress(string label)
+        {
+            foreach(var Entry in symbolTable)
+            {
+                if (Entry.Symbol == label)
+                    return Entry.Address; 
+
+            }
+            return -1;
+        }
         public void printEntries() {
             foreach (var item in symbolTable) {
                 Console.WriteLine(item.Symbol + "\t\t\t" +  item.Address);

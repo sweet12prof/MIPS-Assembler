@@ -20,14 +20,6 @@ namespace MIPS_Assembler.Modules.InstructionModels
             Hexadecimal = 16
         }
 
-        private List<string> instructions = new List<string>
-        {
-            "addi",
-            "lw",
-            "sw",
-            "beq"
-        };
-
         private string opCode;
         public string OpCode {
             get {

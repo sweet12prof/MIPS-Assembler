@@ -14,23 +14,10 @@ namespace MIPS_Assembler.Modules.InstructionModels
             Hexadecimal = 16
         }
 
-        private List<string> instructions = new List<string>
-        {
-            "add",
-            "sub",
-            "and",
-            "or",
-            "xor",
-            "slt",
-            "sll",
-            "srl",
-            "jr"
-        };
-
         public int OutputFormat
         { get {
                 return outputFormat;
-            } set { value = outputFormat; } }
+            } set {  outputFormat = value; } }
 
         private string opCode;
 
@@ -54,7 +41,7 @@ namespace MIPS_Assembler.Modules.InstructionModels
 
             set
             {
-                rs = Convert.ToString(Convert.ToInt32(value), outputFormat).PadLeft(5, '0');
+                rs = Convert.ToString(int.Parse(value), outputFormat).PadLeft(5, '0');
             }
         }
 
@@ -127,12 +114,13 @@ namespace MIPS_Assembler.Modules.InstructionModels
         }
 
 
-        public R_Instruction(string rs, string rt, string rd, string shamt, string instr)
+        public R_Instruction(string rs, string rt, string rd, string shamt, string instr, string instrFormat)
         {
             Rs = rs;
             Rt = rt;
             Rd = rd;
             Shamt = shamt;
+            OutputFormat = int.Parse(instrFormat);
             switch (instr.ToLower())
             {
                 case "add":                   
@@ -168,6 +156,8 @@ namespace MIPS_Assembler.Modules.InstructionModels
                 default:
                     Funct = "-";
                     break;
+
+                    
             }
         }
     }
