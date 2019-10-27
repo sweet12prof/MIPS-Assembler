@@ -15,6 +15,11 @@ namespace MIPS32_Assembler.AssemblerLibrary
         SymbolTableEntry[] symbolTable = new SymbolTableEntry[maxEntries];
 
         // Initialise Symbol Table Function
+
+        public SymbolTable()
+        {
+            InitialiseSymbolTable();
+        }
         public void InitialiseSymbolTable() 
         {
             //Initialise Register names
