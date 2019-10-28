@@ -107,20 +107,21 @@ namespace MIPS_Assembler.Modules.InstructionModels
         {
             string machineCode;
                 machineCode = this.opCode + this.rs + this.rt + this.rd + this.shamt + this.funct;
-            if (machineCode.Length == 32)
                 return machineCode;
-            else
-                return "----";
+         
         }
 
 
-        public R_Instruction(string rs, string rt, string rd, string shamt, string instr, string instrFormat)
+        public R_Instruction(string rs, string rt, string rd, string shamt, string instr, int instrFormat)
         {
+            
+            OutputFormat = instrFormat;
+            Opcode = "0";
             Rs = rs;
             Rt = rt;
             Rd = rd;
             Shamt = shamt;
-            OutputFormat = int.Parse(instrFormat);
+            
             switch (instr.ToLower())
             {
                 case "add":                   

@@ -7,10 +7,22 @@ namespace MIPS32_Assembler.AssemblerLibrary
 {
     class SymbolTable
     {
-        string[] registerNames = new string[32];
+        //string[] registerNames = new string[32];
         // Max entries in Symbol table is 2048
         private const int maxEntries = 2048;
         private int tableEntryCounter = 0;
+
+        private string [] registerNames = {
+            "zero",
+            "at",
+            "v0", "v1",
+            "a0", "a1", "a2", "a3",
+            "t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7",
+            "s0","s1", "s2", "s3", "s4", "s5", "s6", "s7",
+            "t8", "t9",
+            "k0", "k1",
+            "gp", "sp", "fp", "ra"
+        };
         // Creating Symbol Table off Size max Entries
         SymbolTableEntry[] symbolTable = new SymbolTableEntry[maxEntries];
 
@@ -37,7 +49,7 @@ namespace MIPS32_Assembler.AssemblerLibrary
           
             foreach (var term in registerNames)
             {
-                registerNames[tableEntryCounter] = "$" + tableEntryCounter.ToString();
+                registerNames[tableEntryCounter] =  term;
                 symbolTable[tableEntryCounter]  = new SymbolTableEntry();
                 symbolTable[tableEntryCounter].Symbol = registerNames[tableEntryCounter];
                 symbolTable[tableEntryCounter].Address = tableEntryCounter;

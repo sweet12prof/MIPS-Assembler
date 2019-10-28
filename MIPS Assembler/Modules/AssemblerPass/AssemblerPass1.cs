@@ -136,10 +136,10 @@ namespace MIPS32_Assembler.AssemblerLibrary
         {
             string filepath = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".inter";
             string filepath2 = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".inters";
-            //string filepath3 = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".mac";
+            string filepath3 = Path.GetDirectoryName(fileLocation) + @"\" + Path.GetFileNameWithoutExtension(fileLocation) + ".mac";
             File.WriteAllLines(filepath, replaceLabelInstr);
             File.WriteAllLines(filepath2, delabelledInstruction);
-            //File.WriteAllLines(filepath3, delabelledInstruction);
+            File.WriteAllLines(filepath3, machineCode);
 
         }
 
@@ -210,15 +210,36 @@ namespace MIPS32_Assembler.AssemblerLibrary
                     newString2 = newString2.Replace(",", "");
                     replaceLabelInstr.Add(newString2);
 
-                    //string[] newString3 = newString2.Split(" ");
-                    //if(newString3[0] == "add" || newString3[0] == "sub" || newString3[0] == "and"  || newString3[0] == "or"  || newString3[0] == "xor"  || newString3[0] == "slt" )
-                    //{
-                    //    R_Instruction newR = new R_Instruction(newString3[1], newString3[2], newString3[3], "0", newString3[0], "2");
-                    //    machineCode.Add(newR.getMachineCode());
-
-
+                    string[] newString3 = newString2.Split(" ");
+                    newString3[1] = newTable.findAddress(newString3[1].Replace("$", "").Trim()).ToString() == "-1" ? newString3[1] : newTable.findAddress(newString3[1].Replace("$", "").Trim()).ToString();
+                    if(newString3[0].ToLower() != "jr")
+                    {
+                        newString3[2] = newTable.findAddress(newString3[2].Replace("$", "").Trim()).ToString() == "-1" ? newString3[2] : newTable.findAddress(newString3[2].Replace("$", "").Trim()).ToString();
+                        newString3[3] = newTable.findAddress(newString3[3].Replace("$", "").Trim()).ToString() == "-1" ? newString3[3] : newTable.findAddress(newString3[3].Replace("$", "").Trim()).ToString();
+                    }
+                    
+                    //for(int i=0; i < 2; i++)
+                    //{string [sr, bf, bg] = arr
+                    //    Console.WriteLine(newString3[i+1]);
                     //}
-            
+
+
+                    if (newString3[0] == "add" || newString3[0] == "sub" || newString3[0] == "and" || newString3[0] == "or" || newString3[0] == "xor" || newString3[0] == "slt")
+                    {
+                        R_Instruction newR = new R_Instruction(newString3[2], newString3[3], newString3[1], "0", newString3[0], 2);
+                        machineCode.Add(newR.getMachineCode());
+                    }
+                    else if(newString3[0] == "sll" || newString3[0] == "srl")
+                        {
+                        R_Instruction newR = new R_Instruction("0", newString3[2], newString3[1], newString3[3], newString3[0], 2);
+                        machineCode.Add(newR.getMachineCode());
+                    }
+                    else if(newString3[0] == "jr")
+                    {
+                        R_Instruction newR = new R_Instruction(newString3[1], "0", "0", "0", newString3[0], 2);
+                        machineCode.Add(newR.getMachineCode());
+                    }
+
                 }
                     
                 else if (Iinstructions.Contains(newString[0]))
@@ -229,6 +250,14 @@ namespace MIPS32_Assembler.AssemblerLibrary
                             newString2 = instr.Replace("$", "");
                             newString2 = newString2.Replace(",", "");
                             replaceLabelInstr.Add(newString2);
+
+                            string [] newString3 = newString2.Split(" ");
+                            newString3[1] = newTable.findAddress(newString3[1].Replace("$", "").Trim()).ToString() == "-1" ? newString3[1] : newTable.findAddress(newString3[1].Replace("$", "").Trim()).ToString();
+                            newString3[2] = newTable.findAddress(newString3[2].Replace("$", "").Trim()).ToString() == "-1" ? newString3[2] : newTable.findAddress(newString3[2].Replace("$", "").Trim()).ToString();
+                            
+                            I_Instruction newR = new I_Instruction(newString3[0], newString3[2], newString3[1], newString3[3], 2);
+                            machineCode.Add(newR.getMachineCode());
+
                             break;
                         case "beq":
                             {
@@ -239,8 +268,17 @@ namespace MIPS32_Assembler.AssemblerLibrary
                                     newString2 = newString2.Replace("$", "");
                                     newString2 = newString2.Replace(",", "");
                                     replaceLabelInstr.Add(newString2);
+
+                                    string [] newString4 = newString2.Split(" ");
+                                    newString4[1] = newTable.findAddress(newString4[1].Replace("$", "").Trim()).ToString() == "-1" ? newString4[1] : newTable.findAddress(newString4[1].Replace("$", "").Trim()).ToString();
+                                    newString4[2] = newTable.findAddress(newString4[2].Replace("$", "").Trim()).ToString() == "-1" ? newString4[2] : newTable.findAddress(newString4[2].Replace("$", "").Trim()).ToString();
+                                    //newString4[3] = newTable.findAddress(newString4[3].Replace("$", "").Trim()).ToString() == "-1" ? newString4[3] : newTable.findAddress(newString4[3].Replace("$", "").Trim()).ToString();
+                                    
+                                    I_Instruction newR2 = new I_Instruction(newString4[0], newString4[2], newString4[1], newString4[3], 2 );
+                                    machineCode.Add(newR2.getMachineCode());
+
                                 }
-                                
+
                                 break;
                             }
                             
@@ -249,6 +287,27 @@ namespace MIPS32_Assembler.AssemblerLibrary
                             newString2 = instr.Replace("$", "");
                             newString2 = newString2.Replace(",", "");
                             replaceLabelInstr.Add(newString2);
+
+                            string [] newString6 = newString2.Split(" ");
+
+
+
+                            int leftbracketIndex = newString6[2].IndexOf("(");
+                            int length = newString6[2].IndexOf(")") - leftbracketIndex;
+                            
+                            string rs = newString6[2].Substring(leftbracketIndex + 1, length -1).Trim();
+                            string offSet = newString6[2].Substring(0, leftbracketIndex).Trim();
+                           
+
+                           
+                            newString6[1]= newTable.findAddress(newString6[1].Replace("$", "").Trim()).ToString() == "-1" ? newString6[1]: newTable.findAddress(newString6[1].Replace("$", "").Trim()).ToString();
+                            I_Instruction newI = new I_Instruction(newString6[0], rs, newString6[1], offSet, 2);
+                            machineCode.Add(newI.getMachineCode());
+
+
+
+
+
                             break;
 
                         default:
@@ -267,6 +326,14 @@ namespace MIPS32_Assembler.AssemblerLibrary
                             newString2 = newString2.Replace("$", "");
                             newString2 = newString2.Replace(",", "");
                             replaceLabelInstr.Add(newString2);
+
+                            string [] newString3 = newString2.Split(" ");
+                            newString3[1] = newTable.findAddress(newString3[1].Replace("$", "").Trim()).ToString() == "-1" ? newString3[1] : newTable.findAddress(newString3[1].Replace("$", "").Trim()).ToString();
+
+                            J_Instruction newJ = new J_Instruction(newString[0], newString3[1], 2);
+                            machineCode.Add(newJ.getMachineCode());
+
+
                         }
                     }
                 }

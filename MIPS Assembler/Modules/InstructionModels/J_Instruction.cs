@@ -57,8 +57,9 @@ namespace MIPS_Assembler.Modules.InstructionModels
                 return "---";
         }
 
-        public J_Instruction(string instr,  string jumpAddress)
+        public J_Instruction(string instr,  string jumpAddress, int numBase)
         {
+            OutputFormat = numBase;
             switch (instr.ToLower())
             {
                 case "j":

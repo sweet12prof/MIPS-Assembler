@@ -83,8 +83,9 @@ namespace MIPS_Assembler.Modules.InstructionModels
                 return "---";
         }
 
-        public I_Instruction(string instr, string rs, string rt, string immAddress)
+        public I_Instruction(string instr, string rs, string rt, string immAddress, int Base)
         {
+            OutputFormat = Base;
             switch (instr.ToLower())
             {
                 case "addi":
